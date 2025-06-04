@@ -4,9 +4,13 @@ import Image from "next/image"
 import { ArrowLeft } from "lucide-react"
 import { useCategoryForm } from "./contexts/CategoryFormContext"
 import { error } from "console"
+import { useSearchParams } from "next/navigation"
 
 export default function Form(){
-    const {data, isLoading, errors, isDone, handleData, handleCreate, image, setImage} = useCategoryForm();
+    const searchParams = useSearchParams();
+    const updateCategoryId = searchParams.get('id')
+
+    const {data, isLoading, errors, isDone, handleData, handleCreate, image, setImage, } = useCategoryForm();
 
     return(
         <div className="p-6">
@@ -23,7 +27,7 @@ export default function Form(){
                 <form className="space-y-6">
                     <div className="space-y-2">
                         <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                            Category Name *
+                            Category Name * {updateCategoryId}
                         </label>
                         <input 
                             type="text" 

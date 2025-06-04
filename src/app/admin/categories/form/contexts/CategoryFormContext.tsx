@@ -1,11 +1,18 @@
 "use client"
 import { createContext, useContext, useState } from "react";
 import { createNewCategory } from "../../../../../../lib/firebase/category/write";
+import { useSearchParams } from "next/navigation";
+
+interface FormErrors {
+    name?: string;
+    slug?: string;
+    image?: string;
+}
 
 interface CategoryFormContextType {
     data: Record<string, any>;
     isLoading: boolean;
-    errors: string | null;
+    errors: FormErrors | null;
     isDone: boolean;
     image: File | null;
     handleData: (key: string, value: any) => void;
@@ -18,7 +25,7 @@ const CategoryFormContext = createContext<CategoryFormContextType | undefined>(u
 export function CategoryFormContextProvider({children}: {children: React.ReactNode}){
     const [data, setData] = useState<Record<string, any>>({});
     const [isLoading, setIsLoading] = useState(false);
-    const [errors, setErrors] = useState<string | null>(null);
+    const [errors, setErrors] = useState<FormErrors | null>(null);
     const [isDone, setIsDone] = useState(false);
     const [image, setImage] = useState<File | null>(null);
 
@@ -32,12 +39,33 @@ export function CategoryFormContextProvider({children}: {children: React.ReactNo
         setIsDone(false);
 
         try {
-           // TODO : Add data to firebase firestore
-           // Todo image ko store me bhi
-           await createNewCategory({ data: data, image: image});
-           setIsDone(true);
+            // Validate form data
+            const newErrors: FormErrors = {};
+            
+            if (!data.name?.trim()) {
+                newErrors.name = 'Category name is required';
+            }
+            
+            if (!data.slug?.trim()) {
+                newErrors.slug = 'Category slug is required';
+            }
+            
+            if (!image && !data.id) {
+                newErrors.image = 'Category image is required';
+            }
+
+            if (Object.keys(newErrors).length > 0) {
+                setErrors(newErrors);
+                setIsLoading(false);
+                return;
+            }
+
+            await createNewCategory({ data: data, image: image});
+            setIsDone(true);
         } catch (error: any) {
-            setErrors(error?.message || 'An error occurred')
+            setErrors({ 
+                name: error?.message || 'An error occurred'
+            });
         }
         setIsLoading(false);
     }
