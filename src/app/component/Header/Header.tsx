@@ -1,10 +1,15 @@
 import { AppWindowMac } from "lucide-react";
-
+import LoginButtton from "./LoginButton";
+import AuthContextProvider from "../../../../lib/contexts/AuthContext";
+import Link from "next/link";
 export default function Header(){
     return (
     <>
     <nav className="flex justify-between px-7 py-3 border-b">
+        <Link href="/admin">
+        
         <img className="h-10" src={"logo.png"}></img>
+        </Link>
         <ul className="flex">
             <li className="flex gap-5">
                 <h1 className="flex gap-3"> <AppWindowMac />
@@ -15,9 +20,10 @@ export default function Header(){
                     Home</h1>
             </li>
         </ul>
-        <button className="bg-black rounded-2xl w-40 text-white flex items-center gap-1 ">
-            <img className="w-7  " src={"/google.png"}></img>
-            Login with google</button>
+        <AuthContextProvider>
+
+       <LoginButtton/>
+        </AuthContextProvider>
     </nav>
     </>
     );
