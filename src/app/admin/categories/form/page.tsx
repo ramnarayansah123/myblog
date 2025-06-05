@@ -27,7 +27,8 @@ export default function Form(){
                 <form className="space-y-6">
                     <div className="space-y-2">
                         <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                            Category Name * {updateCategoryId}
+                            Category Name * {updateCategoryId && <div className="text-white bg-orange-500 p-2 ">Update</div>}
+                            {!updateCategoryId && <div className="text-white bg-green-500 p-2 ">Create</div>}
                         </label>
                         <input 
                             type="text" 
